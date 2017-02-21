@@ -15,6 +15,8 @@ gem 'turbolinks', '~> 5'
 gem 'jbuilder', '~> 2.5'
 
 gem 'active_model_serializers'
+gem 'devise'
+
 group :development, :test do
   gem 'byebug', platform: :mri
 end
