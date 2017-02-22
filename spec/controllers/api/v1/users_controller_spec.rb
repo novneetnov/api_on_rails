@@ -42,7 +42,37 @@ RSpec.describe Api::V1::UsersController, type: :controller do
 
 			it { should respond_with 422 }
 			it 'should render json errors on why User could not be created' do
-				user_response = JSON.parse(response.body)
+				user_response = JSON.parse response.body
+				expect(user_response).to have_key "errors"
+				expect(user_response["errors"]["email"].first).to eq "can't be blank"
+			end
+		end
+	end
+
+	describe "User#update: " do
+		before { @user = FactoryGirl.create :user }	
+		context "when User is successfully updated" do
+			before :each do
+				@new_email = "new@email.com"
+				patch :update, params: { id: @user.id, user: { email: @new_email } }, format: :json
+			end
+
+			it { should respond_with 200 }
+			it 'should render the User updated in Json format ' do
+				user_response = JSON.parse response.body
+				expect(user_response["email"]).to eq @new_email
+			end
+		end
+
+		context "when User is not successfully updated" do
+			before :each do
+				@new_email = ""
+				patch :update, params: { id: @user.id, user: { email: @new_email } }, format: :json
+			end
+
+			it { should respond_with 422 }
+			it 'should render json errors on why User could not be updated' do
+				user_response = JSON.parse response.body
 				expect(user_response).to have_key "errors"
 				expect(user_response["errors"]["email"].first).to eq "can't be blank"
 			end
