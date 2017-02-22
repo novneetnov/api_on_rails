@@ -3,11 +3,11 @@ require 'rails_helper'
 RSpec.describe Api::V1::UsersController, type: :controller do
 	before :each do
 		request.headers['Accept'] = "application/vnd.marketplace.v1"
+		@user = FactoryGirl.create :user
 	end
 
 	describe "User#show: " do
 		before :each do
-			@user = FactoryGirl.create :user
 			get :show, params: { id: @user.id }, format: :json
 		end
 
@@ -50,7 +50,6 @@ RSpec.describe Api::V1::UsersController, type: :controller do
 	end
 
 	describe "User#update: " do
-		before { @user = FactoryGirl.create :user }	
 		context "when User is successfully updated" do
 			before :each do
 				@new_email = "new@email.com"
@@ -81,7 +80,6 @@ RSpec.describe Api::V1::UsersController, type: :controller do
 
 	describe "User#Delete: " do
 		before :each do 
-			@user = FactoryGirl.create :user
 			@count = User.count
 			get :destroy, params: { id: @user.id }, format: :json
 		end
