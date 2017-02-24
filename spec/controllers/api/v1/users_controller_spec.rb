@@ -2,13 +2,12 @@ require 'rails_helper'
 
 RSpec.describe Api::V1::UsersController, type: :controller do
 	before :each do
-		request.headers['Accept'] = "application/vnd.marketplace.v1"
 		@user = FactoryGirl.create :user
 	end
 
 	describe "User#show: " do
 		before :each do
-			get :show, params: { id: @user.id }, format: :json
+			get :show, params: { id: @user.id }
 		end
 
 		it 'returns the information about a reporter on a hash' do
@@ -24,7 +23,7 @@ RSpec.describe Api::V1::UsersController, type: :controller do
 		context "when User is successfully created" do
 			before :each do
 				@user_attributes = FactoryGirl.attributes_for :user
-				post :create, params: { user: @user_attributes }, format: :json
+				post :create, params: { user: @user_attributes }
 			end
 
 			it 'should render the User created in Json format' do
@@ -37,7 +36,7 @@ RSpec.describe Api::V1::UsersController, type: :controller do
 		context "when User is not created" do
 			before :each do
 				@invalid_user_attributes = { password: "12345678", password_confirmation: "12345678" }
-				post :create, params: { user: @invalid_user_attributes }, format: :json
+				post :create, params: { user: @invalid_user_attributes }
 			end
 
 			it { should respond_with 422 }
@@ -53,7 +52,7 @@ RSpec.describe Api::V1::UsersController, type: :controller do
 		context "when User is successfully updated" do
 			before :each do
 				@new_email = "new@email.com"
-				patch :update, params: { id: @user.id, user: { email: @new_email } }, format: :json
+				patch :update, params: { id: @user.id, user: { email: @new_email } }
 			end
 
 			it { should respond_with 200 }
@@ -66,7 +65,7 @@ RSpec.describe Api::V1::UsersController, type: :controller do
 		context "when User is not successfully updated" do
 			before :each do
 				@new_email = ""
-				patch :update, params: { id: @user.id, user: { email: @new_email } }, format: :json
+				patch :update, params: { id: @user.id, user: { email: @new_email } }
 			end
 
 			it { should respond_with 422 }
@@ -81,7 +80,7 @@ RSpec.describe Api::V1::UsersController, type: :controller do
 	describe "User#Delete: " do
 		before :each do 
 			@count = User.count
-			get :destroy, params: { id: @user.id }, format: :json
+			get :destroy, params: { id: @user.id }
 		end
 		context "when User is deleted successfully" do
 			it { should respond_with 204 }
