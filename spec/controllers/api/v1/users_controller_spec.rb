@@ -80,7 +80,7 @@ RSpec.describe Api::V1::UsersController, type: :controller do
 	describe "User#Delete: " do
 		before :each do 
 			@count = User.count
-			get :destroy, params: { id: @user.id }
+			delete :destroy, params: { id: @user.id }
 		end
 		context "when User is deleted successfully" do
 			it { should respond_with 204 }
