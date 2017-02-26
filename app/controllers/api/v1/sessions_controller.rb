@@ -14,8 +14,13 @@ class Api::V1::SessionsController < ApplicationController
 	end
 
 	def destroy
-		@user = User.find(params[:id])
-		@user.auth_token = nil
-		@user.save!
+		@user = User.find_by(auth_token: params[:auth_token])
+		if @user == current_user
+			@user.auth_token = nil
+			@user.save!
+			head 204
+		else
+			render json: { errors: "You are not authorized to perform this action" }, status: 422
+		end
 	end
 end

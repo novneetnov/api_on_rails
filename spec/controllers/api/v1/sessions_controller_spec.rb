@@ -35,12 +35,26 @@ RSpec.describe Api::V1::SessionsController, type: :controller do
 	describe "Sessions#destroy" do
 		before do 
 			sign_in @user
-			delete :destroy, params: { id: @user.id }
 		end
-		it { should respond_with 204 }
-		it 'the User should have a nil or empty auth_token' do
-			@user.reload
-			expect(@user.auth_token).to be_nil
+		context "Signed in User destroys his session" do
+			before { delete :destroy, params: { id: @user.id, auth_token: @user.auth_token } }
+			it 'the User should have a nil or empty auth_token' do
+				@user.reload
+				expect(@user.auth_token).to be_nil
+			end
+			it { should respond_with 204 }
+		end
+
+		context "Signed in User tries to destroy another user's session" do
+			before do
+				@another_user = FactoryGirl.create :user
+				delete :destroy, params: { id: @another_user.id, auth_token: @another_user.auth_token }
+			end
+
+			it 'should respond with an error message' do
+				expect(json_response[:errors]).to eq "You are not authorized to perform this action"
+			end
+			it { should respond_with 422 }
 		end
 	end
 end
